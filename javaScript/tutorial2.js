@@ -65,8 +65,9 @@ ejeZ.setColors([0,0,1], [0,0,1]);
  // Give the duck a bit of a spin on y
 // duck.setAngularVel(new Array(0.0, 0.001, 0.0));
 
- // Add the object to the scene
- //scn.addObjectToScene(duck);
+ /*Añadimos los objetos creados a las escena*/
+ 
+ //EJES
  scn.addObjectToScene(ejeX);
  scn.addObjectToScene(ejeY);
  scn.addObjectToScene(ejeZ);
