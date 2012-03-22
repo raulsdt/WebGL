@@ -51,6 +51,9 @@ ejeZ = new c3dl.Line();
 ejeZ.setCoordinates([0,0,0], [0,0,100]);
 ejeZ.setColors([0,0,1], [0,0,1]);
 
+//Creacion de esfera
+
+
 
  // If the path is already parsed
  // (as it is in this case)
