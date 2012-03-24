@@ -7,19 +7,134 @@
 
 c3dl.addMainCallBack(canvasMain, "tutorial");
 c3dl.addModel("recursos/modelos/tierra.dae");
+c3dl.addModel("recursos/modelos/jupiter.dae");
+
 
     /*
      * *****************VARIABLES GLOBALES**************
      */  
-    var mundo;
+var mundo;
+var tiempoDesdeCambio = 0;
+var isDragging = false; //Nos muestra si se esta actualmente moviendo el ratón o no
+var rotationStartCoords = [0,0]; //Coordenadas en las que el ratón comienza la rotación
+var SENSITIVITY = 0.7;
+ZOOM_SENSITIVITY = 3;
 
-// The program main
+var timesincelastchange=0; //Variable de llamada al callback
+
+var tierra;
+
+//Llamada cuando el usuario levanta la tecla izquierda del ratón
+function mouseUp(evt)
+{
+	if(evt.which == 1)
+	{
+		isDragging = false;
+	}
+}
+
+//Llamada cuando el usuario baja la tecla izquierda del ratón
+// grabandose la posición de partida del ratón para utilizarlo como datos de referencia
+function mouseDown(evt)
+{
+	if(evt.which == 1)
+	{
+		isDragging = true;
+		rotationStartCoords[0] = xevtpos(evt);
+		rotationStartCoords[1] = yevtpos(evt);
+	}
+}
+
+//Called when the mouse moves
+//This function will only do anything when the user is currently holding
+// the left mouse button.  It will determine how far the cursor has moved
+// since the last update and will pitch and yaw the camera based on that
+// amount and the sensitivity variable.
+
+//Llamada producida con el movimiento del ratón.
+//Esta función unicamente funciona cuando se mantiene activo el botón izqeuirdo del ratón.
+//Determina cuanto ha sido el movimiento producido por el ratón para realizar rotaciones con respecto a ello.
+function mouseMove(evt)
+{
+	if(isDragging == true)
+	{
+                var cam = scn.getCamera();
+		var x = xevtpos(evt);
+		var y = yevtpos(evt);
+		
+		// how much was the cursor moved compared to last time
+		// this function was called?
+		var deltaX = x - rotationStartCoords[0];
+                var deltaY = y - rotationStartCoords[1];
+
+		cam.yaw(-deltaX * SENSITIVITY);
+		cam.pitch(deltaY * SENSITIVITY);
+		
+		// now that the camera was updated, reset where the
+		// rotation will start for the next time this function is 
+		// called.
+		rotationStartCoords = [x,y];
+	}
+}
+
+
+//Llamada producida con el movimiento del Scroll del ratón y produciendonos zoom
+function mouseScroll(evt) {
+	var cam = scn.getCamera();
+        var pos = cam.getPosition();
+        var constante_movimiento = 5;
+        
+	if(-evt.detail*ZOOM_SENSITIVITY < 0)
+		{
+                    cam.setPosition([pos[0]-constante_movimiento,pos[1]-constante_movimiento,pos[2]-constante_movimiento]);            
+                    cam.goFarther(-1 * -evt.detail*ZOOM_SENSITIVITY);
+                        
+		}
+		
+		// towards screen
+		else
+		{
+                     cam.setPosition([pos[0]+constante_movimiento,pos[1]+constante_movimiento,pos[2]+constante_movimiento]);
+                     cam.goCloser(-evt.detail*ZOOM_SENSITIVITY);
+		}
+}
+
+
+
+//Calcula el valor de la coordenada X de la ventana
+function xevtpos(evt)
+{
+    return 2 * (evt.clientX / evt.target.width) - 1;
+}
+
+//Calcula el valor de la coordenada Y de la ventana
+function yevtpos(evt)
+{
+    return 2 * (evt.clientY / evt.target.height) - 1;
+}
+
+
+
+//Callback para llamar a rotacion
+function spinduck(time){
+ // Tiempo en milisegundos de refresco
+ timesincelastchange+=time;
+
+ //El refresco se produce cada 3 seg
+ if(timesincelastchange >=3000){
+ tierra.setAngularVel(new Array(0.0,y,0.0));
+ //tierra.rotateOnAxis([0,1,0], 20);
+
+ timesincelastchange = 0;
+ }
+}
+
 function canvasMain(canvasName){
 
      // Creamos nueva escena
      scn = new c3dl.Scene();
      scn.setCanvasTag(canvasName);
-
+     
      // Creamos el contexto WebGL
      renderer = new c3dl.WebGL();
      renderer.createRenderer(this);
@@ -56,17 +171,31 @@ function canvasMain(canvasName){
 
         //----------------Creamos y posicionamos la camara
         var cam = new c3dl.FreeCamera();
-        cam.setPosition(new Array(50.0, 50.0, 50.0));
+        cam.setPosition(new Array(70.0, 70.0, 70.0));
         cam.setLookAtPoint(new Array(0.0, 0.0, 0.0));
 
-        //------------------Cargamos los modelos (planetas) COLLADA (.dae)
-        mundo = new c3dl.Collada();
-        mundo.init("recursos/modelos/tierra.dae");
-        mundo.scale([0.25,0.25,0.25]);
-        mundo.setAngularVel(new Array(0.0, 0.001, 0.0));
         
-
-
+        // Cargamos modelos
+        // -------------- Cargamos modelo de Planeta Jupiter COLLADA (.dae)
+        jupiter = new c3dl.Collada();
+        jupiter.init("recursos/modelos/jupiter.dae");
+        
+        jupiter.translate([-10,28,22]);
+        jupiter.scale([0.1,0.1,0.1]);
+        jupiter.setAngularVel(new Array(0, 0.001, 0.0));
+        //jupiter.rotateOnAxis([0,1,0], 20);
+        
+        
+        
+        //------------------Cargamos modelo de Planeta Tierra
+        tierra = new c3dl.Collada();
+        tierra.init("recursos/modelos/tierra.dae");
+        
+        tierra.setAngularVel(new Array(0, 0.001, 0.0));
+        tierra.translate([11,28,22]);
+        tierra.scale([0.1,0.1,0.1]);
+        //tierra.rotateOnAxis(this.up, 80.3);
+        
         /*
          * *****************AÑADIMOS LOS OBJETOS DE LA ESCENA**************
          */
@@ -80,7 +209,8 @@ function canvasMain(canvasName){
         scn.setCamera(cam);
 
         //--------------Añadimos los objetos que compone la escena
-        scn.addObjectToScene(mundo);
+        scn.addObjectToScene(tierra);
+        scn.addObjectToScene(jupiter);
 
         /*
          * *****************AÑADIMOS LUCES A LA ESCENA**************
@@ -94,10 +224,19 @@ function canvasMain(canvasName){
     //    diffuse.setOn(true);
     //    scn.addLight(diffuse);
 
+    // ------- Llamada a la función de callback
+     //scn.setUpdateCallback(spinduck); -- Para implementar la rotación si es necesario.
+     
+     //------ Llamada al control de la escena por parte del ratón
+      scn.setMouseCallback(mouseUp,mouseDown, mouseMove,mouseScroll);
 
         /*
          * *****************EMPIEZA LA ESCENA**************
          */
         scn.startScene();
+        
      }
 }
+
+
+
