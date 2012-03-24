@@ -45,11 +45,7 @@ function mouseDown(evt)
 	}
 }
 
-//Called when the mouse moves
-//This function will only do anything when the user is currently holding
-// the left mouse button.  It will determine how far the cursor has moved
-// since the last update and will pitch and yaw the camera based on that
-// amount and the sensitivity variable.
+
 
 //Llamada producida con el movimiento del ratón.
 //Esta función unicamente funciona cuando se mantiene activo el botón izqeuirdo del ratón.
