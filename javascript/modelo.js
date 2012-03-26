@@ -20,8 +20,9 @@ var rotationStartCoords = [0,0]; //Coordenadas en las que el ratón comienza la 
 var SENSITIVITY = 0.7;
 ZOOM_SENSITIVITY = 3;
 
-var timesincelastchange=0; //Variable de llamada al callback
+var NUM_PARTICULAS = 100;
 
+var timesincelastchange=0; //Variable de llamada al callback
 var tierra;
 
 //Llamada cuando el usuario levanta la tecla izquierda del ratón
@@ -125,6 +126,10 @@ function spinduck(time){
  }
 }
 
+function getAleatorio(min, max){
+    return trimNums(c3dl.getRandom(min, max));
+}
+
 function canvasMain(canvasName){
 
      // Creamos nueva escena
@@ -134,15 +139,45 @@ function canvasMain(canvasName){
      // Creamos el contexto WebGL
      renderer = new c3dl.WebGL();
      renderer.createRenderer(this);
-
+     
+     scn.setBackgroundColor([0,0,0]);
      // Attach renderer to the scene
      scn.setRenderer(renderer);
-     //scn.setAmbientLight([0,0,0,0]);
+     //scn.setAmbientLight([0,0,0,0]);   
      scn.init(canvasName);
-
+     
 
      if(renderer.isReady() ){
          
+        /*
+         * *****************SISTEMAS DE PARTICULAS******************
+         */ 
+        
+        estrellas = new c3dl.ParticleSystem();
+        estrellas.setPosition([-30.0,-20.0,50.0]);
+        
+        estrellas.setMinVelocity([5,5,0]);
+        estrellas. setMaxVelocity([8,8,0]);
+        
+        estrellas.setMinLifetime(5);
+        estrellas.setMaxLifetime(30);
+        
+        /** Definicion de Color**/
+        estrellas.setMinColor([0.8,0.4,0.4,0.5]);
+        estrellas.setMaxColor([1,0.6,0.6,0.5]);
+        
+        /** Definición tamaño de particulas **/
+        estrellas.setMinSize(0.1);
+        estrellas.setMaxSize(0.3);
+        
+        estrellas.setSrcBlend(c3dl.ONE);
+        estrellas.setDstBlend(c3dl.DST_ALPHA);
+        
+        estrellas.setAcceleration([0,0,0]);
+        estrellas.setEmitRate(2500);
+        
+        estrellas.init(NUM_PARTICULAS);
+        
         /*
          * *****************MATERIALES PARA LOS OBJETOS**************
          */   
@@ -151,7 +186,7 @@ function canvasMain(canvasName){
         /*
          * *****************CREACIÓN DE OBJETOS DE LA ESCENA**************
          */
-
+        
         //---------------------Creamos ejes cartesianos
         ejeX = new c3dl.Line();
         ejeX.setCoordinates([0,0,0], [100,0,0]);
@@ -207,6 +242,7 @@ function canvasMain(canvasName){
         //--------------Añadimos los objetos que compone la escena
         scn.addObjectToScene(tierra);
         scn.addObjectToScene(jupiter);
+        scn.addObjectToScene(estrellas);
 
         /*
          * *****************AÑADIMOS LUCES A LA ESCENA**************
