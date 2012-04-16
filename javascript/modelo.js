@@ -8,6 +8,7 @@
 c3dl.addMainCallBack(canvasMain, "tutorial");
 c3dl.addModel("recursos/modelos/tierra.dae");
 c3dl.addModel("recursos/modelos/jupiter.dae");
+c3dl.addModel("recursos/modelos/sol.dae");
 
 
     /*
@@ -149,32 +150,66 @@ function canvasMain(canvasName){
 
      if(renderer.isReady() ){
          
+          /*
+         * *****************SISTEMAS DE PARTICULAS SOL******************
+         */ 
+        
+        sSol = new c3dl.ParticleSystem();
+        sSol.setPosition([0,0,0]);
+        
+        sSol.setTexture("recursos/texturas/flare.gif");
+        
+        sSol.setMinVelocity([-12,-12,-12]);
+        sSol. setMaxVelocity([12,12,12]);
+        
+        sSol.setMinLifetime(0.3);
+        sSol.setMaxLifetime(0.4);
+        
+        /** Definicion de Color**/
+        sSol.setMinColor([0.4,0,0,0]);
+        sSol.setMaxColor([1,0.4,0,1]);
+        
+        /** Definición tamaño de particulas **/
+        sSol.setMinSize(3);
+        sSol.setMaxSize(6);
+        
+        sSol.setSrcBlend(c3dl.ONE);
+        sSol.setDstBlend(c3dl.DST_ALPHA);
+        
+        sSol.setAcceleration([0,0,0]);
+        sSol.setEmitRate(20);
+        
+        sSol.init(NUM_PARTICULAS);
+        
+         
         /*
          * *****************SISTEMAS DE PARTICULAS******************
          */ 
         
         estrellas = new c3dl.ParticleSystem();
-        estrellas.setPosition([-30.0,-20.0,50.0]);
+        estrellas.setPosition([0,0,0]);
         
-        estrellas.setMinVelocity([5,5,0]);
-        estrellas. setMaxVelocity([8,8,0]);
+        estrellas.setTexture("recursos/texturas/shine.gif");
         
-        estrellas.setMinLifetime(5);
-        estrellas.setMaxLifetime(30);
+        estrellas.setMinVelocity([-10,-10,-10]);
+        estrellas. setMaxVelocity([10,10,10]);
+        
+        estrellas.setMinLifetime(4);
+        estrellas.setMaxLifetime(20);
         
         /** Definicion de Color**/
-        estrellas.setMinColor([0.8,0.4,0.4,0.5]);
-        estrellas.setMaxColor([1,0.6,0.6,0.5]);
+        estrellas.setMinColor([1,1,1,1]);
+        estrellas.setMaxColor([1,1,1,1]);
         
         /** Definición tamaño de particulas **/
-        estrellas.setMinSize(0.1);
-        estrellas.setMaxSize(0.3);
+        estrellas.setMinSize(0.5);
+        estrellas.setMaxSize(3);
         
         estrellas.setSrcBlend(c3dl.ONE);
         estrellas.setDstBlend(c3dl.DST_ALPHA);
         
         estrellas.setAcceleration([0,0,0]);
-        estrellas.setEmitRate(2500);
+        estrellas.setEmitRate(20);
         
         estrellas.init(NUM_PARTICULAS);
         
@@ -207,11 +242,20 @@ function canvasMain(canvasName){
 
         
         // Cargamos modelos
+        // -------------- Cargamos modelo del sol (.dae)
+        sol = new c3dl.Collada();
+        sol.init("recursos/modelos/sol.dae");
+        
+
+        sol.scale([0.1,0.1,0.1]);
+        sol.setAngularVel(new Array(0, 0.001, 0.0));
+        //sol.rotateOnAxis([0,1,0], 20); 
+       
         // -------------- Cargamos modelo de Planeta Jupiter COLLADA (.dae)
         jupiter = new c3dl.Collada();
         jupiter.init("recursos/modelos/jupiter.dae");
         
-        jupiter.translate([-10,28,22]);
+        jupiter.translate([-14,32,26]);
         jupiter.scale([0.1,0.1,0.1]);
         jupiter.setAngularVel(new Array(0, 0.001, 0.0));
         //jupiter.rotateOnAxis([0,1,0], 20);
@@ -242,7 +286,9 @@ function canvasMain(canvasName){
         //--------------Añadimos los objetos que compone la escena
         scn.addObjectToScene(tierra);
         scn.addObjectToScene(jupiter);
+        scn.addObjectToScene(sol);
         scn.addObjectToScene(estrellas);
+        scn.addObjectToScene(sSol);
 
         /*
          * *****************AÑADIMOS LUCES A LA ESCENA**************
