@@ -1,0 +1,84 @@
+div#contenedor{
+	text-align: left; 
+	width: auto;/*700px;*/ 
+	margin: auto;
+	/*border: 1px solid #d0d0d0;*/
+	height:auto;
+}
+
+div#cabecera{
+	text-align: center; 
+	width:95%; 
+	/*border: 1px solid #d0d0d0;*/
+	top: 10px ;
+	height:20%;
+	margin:auto;
+	margin-top:10px;
+}
+
+
+div#cuerpo{
+	position:relative;
+	text-align: left; 
+	width:95%; 
+	margin:auto;
+	/*border: 1px solid #d0d0d0;*/
+	margin-bottom:10px;
+}
+
+div#enlaces{
+	position:relative;
+	text-align: center; 
+	width:20%;
+        height: 500px;
+	/*border: 2px solid #000000;*/
+	float:left;
+	margin-top:10px;
+        /*background-color: #000000;*/
+}
+
+
+div#banner{
+	position:relative;
+	text-align: center; 
+	width:30%;
+	/*border: 1px solid #d0d0d0;*/
+	float:left;
+	margin-top:10px;
+}
+
+div#banner2{
+	position:relative;
+	text-align: center; 
+	width:30%;
+	/*border: 1px solid #d0d0d0;*/
+	float:left;
+	margin-top:10px;
+}
+
+div#contenido{
+	float:right;
+	margin-top:10px;
+	width:75%;
+	text-align:left;
+	/*border: 1px solid #d0d0d0; */
+}
+
+div#pie{
+	position:relative;
+	text-align: left; 
+	width:100%; 
+	margin:auto;
+	/*border: 1px solid #d0d0d0;*/
+	height:5%;
+	float:left;
+	margin-top:10px;
+}
+
+h2{
+	text-align:center;
+}
+
+td{
+    color: #000000;
+}

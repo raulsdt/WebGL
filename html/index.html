@@ -1,11 +1,111 @@
-﻿<html>
-    <head>
-        <title>Cavas3D tutorial #2: A Simple Scene</title>
-        <script type="application/javascript" src="../c3dl/c3dapi.js" ></script>
-        <script type="application/javascript" src="../javascript/modelo.js"></script>
-    </head>
-    <body>
-        <!-- Add a canvas element to the page. It is scripted by using its id -->
-        <canvas id="tutorial" style="border: 2px solid blue" width="1000" height="700"></canvas>
-    </body>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/> 
+    <title>WebGL - Sistema Solar</title>
+    <link rel="STYLESHEET" type="text/css" href="hojaEstilos.css"> 
+    <script type="application/javascript" src="../c3dl/c3dapi.js" ></script>
+    <script type="application/javascript" src="../javascript/modelo.js"></script>
+</head>
+
+<body>
+
+<div id = "contenedor">
+	<div id = "cabecera">
+            <img src="./recursos/imagenes/Cabecera.png" width="100%" height="100%">
+	</div>
+	<div id = "cuerpo">
+	
+		<div id = "enlaces">
+                        <!-- ATRIBUTOS DE LA ESCENA ON / OFF -->
+                        <fieldset>
+                            <legend>Atributos</legend>
+                            <table>
+                                <tr>
+                                    <td>On/Off Ejes: </td>
+                                    <td><input type ="checkbox" name="ejes" checked="true" onclick="OnOffEjes()"> <br></td>
+                                </tr>
+                                <tr>
+                                    <td>On/Off Estrellas: </td>
+                                    <td><input type ="checkbox" name="stars" checked="true" onclick="OnOffStars()"> <br></td>
+                                </tr>
+                                <tr>
+                                    <td>On/Off Sol: </td>
+                                    <td><input type ="checkbox" name="sol" checked="true" onclick="OnOffSun()"> <br></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <select id ="iluminacion" name="iluminacion" onchange="OnOffLuces()">
+                                            <option value = "iluminacion1">Iluminación realista</option>
+                                            <option value = "iluminacion2">Iluminación plana</option>
+                                        </select>
+                                        
+                                    </td>
+                                    <td></td>
+                                </tr>
+                            </table>
+                        </fieldset>
+                       
+                        <!-- INFORMACIÓN DE LOS PLANETAS -->
+                        
+                        <fieldset>
+                            <legend>Inforamción Planetas</legend>
+                            <table>
+                                <tr>
+                                    <td>Nombre: </td>
+                                    <td><span id="nombrePlaneta"> </span></td>
+                                </tr>
+                                <tr>
+                                    <td>Diametro*: </td>
+                                    <td><span id="diametroPlaneta"> </span></td>
+                                </tr>
+                                <tr>
+                                    <td>Masa*: </td>
+                                    <td><span id="masaPlaneta"> </span></td>
+                                </tr>
+                                <tr>
+                                    <td>Radio Orbital(UA): </td>
+                                    <td><span id="radioPlaneta"> </span></td>
+                                </tr>
+                                <tr>
+                                    <td>Periodo Orbital(años): </td>
+                                    <td><span id="periodoPlaneta"> </span></td>
+                                </tr>
+                                <tr>
+                                    <td>Periodo rotación(días): </td>
+                                    <td><span id="periodoRPlaneta"> </span></td>
+                                </tr>
+
+                                <tr>
+                                    <td>Satélites: </td>
+                                    <td><span id="satelitesPlaneta"> </span></td>
+                                </tr>
+                            </table>
+                        </fieldset>
+                        
+                        <!-- Explicación -->
+                        <br><br><br><br>
+                        <small>* El diametro y masa se expresan en realción a la tierra</small>
+                        
+		</div>	
+		
+		<div id = "contenido">
+			<canvas id="tutorial" style="border: 2px solid blue" width="950" height="500"></canvas>
+		</div>
+		
+		<div id = "pie">
+			<p align = "center">
+                            <b>Raul Salazar de Torres</b>
+                            <br>
+                            <b>José Manuel Serrano Mármol</b> 
+                        </p>
+		</div>
+	
+	
+	</div>
+	
+</div>
+
+</body>
+
 </html>

@@ -1,5 +1,5 @@
 /**
- * Sistema solar
+ * Sistema solar en WebGL - C3DL
  * @autor José Manuel Serrano Mármol
  * @autor Raul Salazar de Torres
  */
@@ -21,18 +21,186 @@ c3dl.addModel("recursos/modelos/neptuno.dae");
      * *****************VARIABLES GLOBALES**************
      */
 
-//var rot0 = 0; var rot1 = 0; var rot2 = 0; var rot3 = 0; var rot4 = 0; var rot5 = 0; var rot6 = 0; var rot7 = 0;
-//var t0 = 0; var t1 = 0; var t2 = 0; var t3 = 0; var t4 = 0; var t5 = 0; var t6 = 0; var t7 = 0;
-var rotaciones = [0,0,0,0,0,0,0,0];
-var tiempos = [0,0,0,0,0,0,0,0];
+var rotaciones = [0,0,0,0,0,0,0,0]; //Array que contiene las rotaciones de cada planeta
+var tiempos = [0,0,0,0,0,0,0,0];    //Array que contiene los tiempos de actualización de la rotación de los plaentas
 
+
+/*Variables para controlar los EVENTOS DE RATÓN*/
 var tiempoDesdeCambio = 0;
-var isDragging = false; //Nos muestra si se esta actualmente moviendo el ratón o no
-var rotationStartCoords = [0,0]; //Coordenadas en las que el ratón comienza la rotación
-var SENSITIVITY = 0.7;
-ZOOM_SENSITIVITY = 3;
+var isDragging = false; //¿Arrastre del botón?
+var rotationStartCoords = [0,0]; //Coordenadas del ratón
+var SENSITIVITY = 0.7; //Sensibilidad
+ZOOM_SENSITIVITY = 3;  //Zoom
 
 var NUM_PARTICULAS = 100;
+
+    /*
+     * *****************INTERACCIÓN CON EL USUARIO**************
+     */
+    var isActivateAxis = 1;
+    var isActivateStars = 1;
+    var isActivateSun = 1;
+    
+    /**/
+    function OnOffEjes(){
+        isActivateAxis++;
+        isActivateAxis = isActivateAxis % 2;
+        if(isActivateAxis == 1){
+            ejeX.setVisible(true);
+            ejeY.setVisible(true);
+            ejeZ.setVisible(true);
+        }else{
+            ejeX.setVisible(false);
+            ejeY.setVisible(false);
+            ejeZ.setVisible(false);
+        }
+    }
+    
+    function OnOffStars(){
+        isActivateStars++;
+        isActivateStars = isActivateStars % 2;
+        if(isActivateStars == 1){
+            scn.addObjectToScene(estrellas);
+        }else{
+            scn.removeObjectFromScene(estrellas);
+        }
+    }
+    
+    function OnOffSun(){
+        isActivateSun++;
+        isActivateSun = isActivateSun % 2;
+        if(isActivateSun == 1){
+            scn.addObjectToScene(sSol);
+        }else{
+            scn.removeObjectFromScene(sSol);
+        }
+    }
+    
+    //Variables globales para la iluminación
+    var luzDifusa;
+
+    function OnOffLuces(){
+        var valor = document.getElementById('iluminacion').value;
+        if(valor == 'iluminacion1'){
+            scn.setAmbientLight([0,0,0,0]);
+            luzDifusa.setOn(true);
+        }else{
+            scn.setAmbientLight([1,1,1,1]);
+            luzDifusa.setOn(false);
+        }
+    }
+    
+    
+    /*
+     * ***************** MANEJADOR DE SELECCIÓN **************
+     */   
+        
+    function handler(result){
+        var buttonUsed = result.getButtonUsed();
+        var objectsPicked = result.getObjects();
+        if(objectsPicked != undefined){
+                // a left mouse click will equal 1;
+                // at present that is the only mouse event implemented
+                
+            if (buttonUsed == 1){
+                    // loop through the objects
+                    
+                for(var i = 0 ; i < objectsPicked.length; i++){
+                        // get the object that was picked
+                        obj = objectsPicked[i];
+                        //Mostramos información de los planetas
+                        
+                        switch(obj){
+                            case mercurio:
+                                document.getElementById('nombrePlaneta').innerHTML = "Mercurio";
+                                document.getElementById('diametroPlaneta').innerHTML = "0.385";
+                                document.getElementById('masaPlaneta').innerHTML = "0.060";
+                                document.getElementById('radioPlaneta').innerHTML = "0.380";
+                                document.getElementById('periodoPlaneta').innerHTML = "0.241";
+                                document.getElementById('periodoRPlaneta').innerHTML = "58.60";
+                                document.getElementById('satelitesPlaneta').innerHTML = "0";
+                            break;
+                            
+                            case venus:
+                                document.getElementById('nombrePlaneta').innerHTML = "Venus";
+                                document.getElementById('diametroPlaneta').innerHTML = "0.949";
+                                document.getElementById('masaPlaneta').innerHTML = "0.820";
+                                document.getElementById('radioPlaneta').innerHTML = "0.720";
+                                document.getElementById('periodoPlaneta').innerHTML = "0.615";
+                                document.getElementById('periodoRPlaneta').innerHTML = "243.000";
+                                document.getElementById('satelitesPlaneta').innerHTML = "0";
+                            break;
+                            
+                            case tierra:
+                                document.getElementById('nombrePlaneta').innerHTML = "Tierra";
+                                document.getElementById('diametroPlaneta').innerHTML = "1.000";
+                                document.getElementById('masaPlaneta').innerHTML = "1.000";
+                                document.getElementById('radioPlaneta').innerHTML = "1.000";
+                                document.getElementById('periodoPlaneta').innerHTML = "1.000";
+                                document.getElementById('periodoRPlaneta').innerHTML = "1.000";
+                                document.getElementById('satelitesPlaneta').innerHTML = "1";
+                            break;
+                            
+                            case marte:
+                                document.getElementById('nombrePlaneta').innerHTML = "Marte";
+                                document.getElementById('diametroPlaneta').innerHTML = "0.530";
+                                document.getElementById('masaPlaneta').innerHTML = "0.110";
+                                document.getElementById('radioPlaneta').innerHTML = "1.520";
+                                document.getElementById('periodoPlaneta').innerHTML = "1.880";
+                                document.getElementById('periodoRPlaneta').innerHTML = "1.030";
+                                document.getElementById('satelitesPlaneta').innerHTML = "2";
+                            break;
+                            
+                            case jupiter:
+                                document.getElementById('nombrePlaneta').innerHTML = "Jupiter";
+                                document.getElementById('diametroPlaneta').innerHTML = "11.200";
+                                document.getElementById('masaPlaneta').innerHTML = "318.000";
+                                document.getElementById('radioPlaneta').innerHTML = "5.200";
+                                document.getElementById('periodoPlaneta').innerHTML = "11.860";
+                                document.getElementById('periodoRPlaneta').innerHTML = "0.414";
+                                document.getElementById('satelitesPlaneta').innerHTML = "65";
+                            break;
+                            
+                            case saturno:
+                                document.getElementById('nombrePlaneta').innerHTML = "Saturno";
+                                document.getElementById('diametroPlaneta').innerHTML = "9.410";
+                                document.getElementById('masaPlaneta').innerHTML = "95.000";
+                                document.getElementById('radioPlaneta').innerHTML = "9.550";
+                                document.getElementById('periodoPlaneta').innerHTML = "29.460";
+                                document.getElementById('periodoRPlaneta').innerHTML = "0.426";
+                                document.getElementById('satelitesPlaneta').innerHTML = "62";
+                            break;
+                            
+                            case urano:
+                                document.getElementById('nombrePlaneta').innerHTML = "Urano";
+                                document.getElementById('diametroPlaneta').innerHTML = "3.980";
+                                document.getElementById('masaPlaneta').innerHTML = "14.600";
+                                document.getElementById('radioPlaneta').innerHTML = "19.220";
+                                document.getElementById('periodoPlaneta').innerHTML = "84.010";
+                                document.getElementById('periodoRPlaneta').innerHTML = "0.718";
+                                document.getElementById('satelitesPlaneta').innerHTML = "27";
+                            break;
+                            
+                            case neptuno:
+                                document.getElementById('nombrePlaneta').innerHTML = "Neptuno";
+                                document.getElementById('diametroPlaneta').innerHTML = "3.810";
+                                document.getElementById('masaPlaneta').innerHTML = "17.200";
+                                document.getElementById('radioPlaneta').innerHTML = "30.060";
+                                document.getElementById('periodoPlaneta').innerHTML = "164.790";
+                                document.getElementById('periodoRPlaneta').innerHTML = "0.674";
+                                document.getElementById('satelitesPlaneta').innerHTML = "13";
+                            break;
+                        }
+                }
+            }
+        }
+    }
+    
+    
+    
+    /*
+     * *****************EVENTOS DE RATÓN**************
+     */
 
 //Llamada cuando el usuario levanta la tecla izquierda del ratón
 function mouseUp(evt)
@@ -159,19 +327,19 @@ function rotacionPlanetas(time){
    }
    
    if(tiempos[5] >= 80){
-       rotaciones[5] += 0.04;
+       rotaciones[5] += 0.03;
        saturno.setPosition([55 * Math.cos(rotaciones[5]),0, 55 * Math.sin(rotaciones[5])]);
        tiempos[5] = 0;
    }
    
    if(tiempos[6] >=90){
-       rotaciones[6] += 0.04;
+       rotaciones[6] += 0.02;
        urano.setPosition([63 * Math.cos(rotaciones[6]),0, 63 * Math.sin(rotaciones[6])]);   
        tiempos[6] = 0;
    }
    
    if(tiempos[7] >=100){
-       rotaciones[7] += 0.04;
+       rotaciones[7] += 0.01;
        neptuno.setPosition([73 * Math.cos(rotaciones[7]),0, 73 * Math.sin(rotaciones[7])]);
        tiempos[7] = 0;
    }
@@ -235,11 +403,11 @@ function canvasMain(canvasName){
         
          
         /*
-         * *****************SISTEMAS DE PARTICULAS******************
+         * *****************SISTEMAS DE PARTICULAS ESTRELLAS******************
          */ 
         
         estrellas = new c3dl.ParticleSystem();
-        estrellas.setPosition([0,0,0]);
+        estrellas.setPosition([-30,-30,-30]);
         
         estrellas.setTexture("recursos/texturas/shine.gif");
         
@@ -255,7 +423,7 @@ function canvasMain(canvasName){
         
         /** Definición tamaño de particulas **/
         estrellas.setMinSize(0.5);
-        estrellas.setMaxSize(3);
+        estrellas.setMaxSize(1);
         
         estrellas.setSrcBlend(c3dl.ONE);
         estrellas.setDstBlend(c3dl.DST_ALPHA);
@@ -264,11 +432,6 @@ function canvasMain(canvasName){
         estrellas.setEmitRate(20);
         
         estrellas.init(NUM_PARTICULAS);
-        
-        /*
-         * *****************MATERIALES PARA LOS OBJETOS**************
-         */   
-
 
         /*
          * *****************CREACIÓN DE OBJETOS DE LA ESCENA**************
@@ -285,7 +448,7 @@ function canvasMain(canvasName){
 
         ejeZ = new c3dl.Line();
         ejeZ.setCoordinates([0,0,0], [0,0,100]);
-        ejeZ.setColors([0,0,1], [0,0,1]);
+        ejeZ.setColors([0,0,1], [0,0,1]);        
 
         //----------------Creamos y posicionamos la camara
         var cam = new c3dl.FreeCamera();
@@ -351,6 +514,19 @@ function canvasMain(canvasName){
         neptuno.scale([0.06,0.06,0.06]);
         neptuno.setAngularVel(new Array(0, 0.001, 0.0));
         
+        
+        /*
+         * *****************ILUMIANCIÓN DE LA ESCENA **************
+         */
+         luzDifusa = new c3dl.PositionalLight();
+         luzDifusa.setName('difusa');
+         luzDifusa.setPosition([10,10,10]);
+         luzDifusa.setDiffuse([0.4,0.8,0.5,1]);
+         luzDifusa.setOn(true);
+         scn.addLight(luzDifusa);
+
+         scn.setAmbientLight([0,0,0,0]);
+        
         /*
          * *****************AÑADIMOS LOS OBJETOS DE LA ESCENA**************
          */
@@ -376,26 +552,15 @@ function canvasMain(canvasName){
         
         scn.addObjectToScene(sSol);
         scn.addObjectToScene(estrellas);
-
-        /*
-         * *****************AÑADIMOS LUCES A LA ESCENA**************
-         */
-
-    //    var diffuse = new c3dl.PositionalLight();
-    //    diffuse.setName('diffuse');
-    //    diffuse.setPosition([0,300,0]);
-    //    diffuse.setDiffuse([0.5,0.5,0.5,1]);
-    //    //diffuse.setAmbient([0.4,1,0.4,1]);
-    //    diffuse.setOn(true);
-    //    scn.addLight(diffuse);
-
-
+        
     // ------- Llamada a funciones de callback
         scn.setUpdateCallback(rotacionPlanetas);
      
     //------ Llamada al control de la escena por parte del ratón
         scn.setMouseCallback(mouseUp,mouseDown, mouseMove,mouseScroll);
-
+    
+    //------ Llamada al manejador de selección
+        scn.setPickingCallback(handler);
     //------ Comienzo de la escena
         scn.startScene();
         
