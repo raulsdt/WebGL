@@ -82,3 +82,21 @@ h2{
 td{
     color: #000000;
 }
+
+legend{
+    color: #FF0000;
+    font-weight: bold;
+}
+
+
+.centrado{
+    text-align: center;
+}
+
+body{
+    background-image: url('./recursos/imagenes/fondo.jpg');
+}
+
+td{
+    color: #FFFFFF;
+}
